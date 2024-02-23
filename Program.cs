@@ -7,12 +7,6 @@ using System.Numerics;
 using System.Threading.Channels;
 
 Console.Clear();
-
-IWeb3 web3 = new Web3("https://eth.llamarpc.com");
-IHuffplugService buttplugService = new(web3, "0x0000420538CD5AbfBC7Db219B6A1d125f5892Ab0");
-BigInteger diff = await buttplugService.CurrentDifficultyQueryAsync();
-
-int difficulty = (int)diff;
 if (args.Length == 0) {
 	Console.WriteLine("Pass the address as first parameter to generate hashes");
 	return;
@@ -21,6 +15,11 @@ string user = args[0];
 if (user.StartsWith("0x")) {
 	user = user[2..];
 }
+
+IWeb3 web3 = new Web3("https://eth-mainnet.public.blastapi.io");
+IHuffplugService buttplugService = new(web3, "0x0000420538CD5AbfBC7Db219B6A1d125f5892Ab0");
+
+int difficulty = (int)await buttplugService.CurrentDifficultyQueryAsync();
 
 string salt = (await buttplugService.SaltQueryAsync()).ToHex();
 string difficultyString = Enumerable.Repeat('0', difficulty).ToArray().AsSpan().ToString();
